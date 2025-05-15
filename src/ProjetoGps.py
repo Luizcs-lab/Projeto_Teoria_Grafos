@@ -2,11 +2,21 @@ import folium
 import tkinter as tk
 from tkinter import ttk
 from folium.plugins import MarkerCluster
-import webbrowser
 from heapq import heappop, heappush
 from geopy.geocoders import Nominatim
+import openrouteservice as ors
+import pickle
+import os
+import webbrowser
 
-# Grafo atualizado com hospitais e distâncias aproximadas entre bairros e hospitais
+# ==================== CONFIGURAÇÕES ====================
+# API do OpenRouteService (crie uma conta gratuita em https://openrouteservice.org/)
+ORS_API_KEY = 'SUA_CHAVE_API_ORS_AQUI'  # Substitua aqui
+client = ors.Client(key=ORS_API_KEY)
+geolocator = Nominatim(user_agent="meu_aplicativo_mogi_caminhos")
+CACHE_COORDENADAS = 'coordenadas_cache.pkl'
+
+# ==================== GRAFO ====================
 grafo = {
     'Centro': {'Vila Industrial': 4, 'Vila Oliveira': 3, 'Bairro do Mercado': 2, 'Hospital Municipal de Mogi': 2},
     'Vila Industrial': {'Centro': 4, 'Bairro do Mercado': 3, 'Bairro do Carmo': 5, 'Hospital Municipal de Mogi': 3},
@@ -22,20 +32,36 @@ grafo = {
     'Hospital de Clínicas Luzia de Pinho Melo': {'Bairro do Carmo': 4, 'Bairro das Laranjeiras': 2}
 }
 
-# Inicializa o geocodificador
-geolocator = Nominatim(user_agent="meu_aplicativo_mogi_caminhos")
+hospitais = [n for n in grafo if 'Hospital' in n]
 
-# Obtém coordenadas automaticamente
+# ==================== COORDENADAS COM CACHE ====================
 def obter_coordenadas(local):
-    resultado = geolocator.geocode(f"{local}, Mogi das Cruzes, Brasil")
-    if resultado:
-        return [resultado.latitude, resultado.longitude]
-    return None  # Retorna None se não encontrar
+    try:
+        return locais[local]
+    except:
+        resultado = geolocator.geocode(f"{local}, Mogi das Cruzes, Brasil")
+        if resultado:
+            locais[local] = [resultado.latitude, resultado.longitude]
+            salvar_cache()
+            return locais[local]
+        return None
 
-# Criar dicionário com coordenadas de bairros e hospitais
-locais = {local: obter_coordenadas(local) for local in grafo.keys()}
+def salvar_cache():
+    with open(CACHE_COORDENADAS, 'wb') as f:
+        pickle.dump(locais, f)
 
-# Função de Dijkstra para encontrar o caminho mais curto
+def carregar_cache():
+    if os.path.exists(CACHE_COORDENADAS):
+        with open(CACHE_COORDENADAS, 'rb') as f:
+            return pickle.load(f)
+    return {}
+
+locais = carregar_cache()
+for local in grafo:
+    if local not in locais:
+        obter_coordenadas(local)
+
+# ==================== ALGORITMO DE DIJKSTRA ====================
 def dijkstra(grafo, inicio, fim):
     fila = [(0, inicio, [])]
     visitados = set()
@@ -57,64 +83,70 @@ def dijkstra(grafo, inicio, fim):
 
     return None, float('inf')
 
-# Função para criar e salvar o mapa
+# ==================== HOSPITAL MAIS PRÓXIMO ====================
+def hospital_mais_proximo(origem):
+    menor_dist = float('inf')
+    melhor_caminho = []
+    hospital_mais_perto = None
+
+    for hospital in hospitais:
+        caminho, dist = dijkstra(grafo, origem, hospital)
+        if dist < menor_dist:
+            menor_dist = dist
+            melhor_caminho = caminho
+            hospital_mais_perto = hospital
+
+    return melhor_caminho, menor_dist, hospital_mais_perto
+
+# ==================== MAPA COM ROTA REAL ====================
 def criar_mapa(caminho):
-    # Criar mapa centrado em Mogi das Cruzes
-    mapa = folium.Map(location=[-23.1893, -46.3100], zoom_start=13)
+    mapa = folium.Map(location=[-23.5, -46.2], zoom_start=13)
     marker_cluster = MarkerCluster().add_to(mapa)
 
-    # Adicionar os marcadores no mapa
-    for local, coord in locais.items():
+    # Marcadores
+    for local in caminho:
+        coord = obter_coordenadas(local)
         if coord:
-            folium.Marker(location=coord, popup=local).add_to(marker_cluster)
+            folium.Marker(coord, popup=local, icon=folium.Icon(color='blue')).add_to(marker_cluster)
 
-    # Adicionar o caminho no mapa
-    for i in range(len(caminho) - 1):
-        if locais[caminho[i]] and locais[caminho[i + 1]]:
-            folium.PolyLine(
-                locations=[locais[caminho[i]], locais[caminho[i + 1]]],
-                color='red', weight=4, opacity=0.7
-            ).add_to(mapa)
+    # Traçar rota real com ORS
+    coords = [tuple(obter_coordenadas(local)[::-1]) for local in caminho if obter_coordenadas(local)]
+    if len(coords) >= 2:
+        try:
+            rota = client.directions(coords, profile='driving-car', format='geojson')
+            folium.GeoJson(rota, name='rota').add_to(mapa)
+        except Exception as e:
+            print(f"Erro ao traçar rota real: {e}")
 
-    # Salvar e abrir o mapa
     mapa.save("mapa_com_caminho.html")
-    webbrowser.open('mapa_com_caminho.html', new=2)
+    webbrowser.open("mapa_com_caminho.html", new=2)
 
-# Função para interface gráfica
+# ==================== INTERFACE ====================
 def calcular_rota():
-    inicio = entry_inicio.get()
-    fim = entry_fim.get()
+    inicio = entry_inicio.get().strip()
 
-    if inicio in grafo and fim in grafo:
-        caminho, distancia = dijkstra(grafo, inicio, fim)
-        if caminho:
-            resultado_label.config(text=f"Caminho: {' -> '.join(caminho)}\nDistância: {distancia} km")
-            criar_mapa(caminho)
-        else:
-            resultado_label.config(text="Não foi possível encontrar um caminho.")
+    if inicio not in grafo:
+        resultado_label.config(text="Local de partida inválido.")
+        return
+
+    caminho, dist, hospital = hospital_mais_proximo(inicio)
+    if caminho:
+        resultado_label.config(text=f"Destino automático: {hospital}\nCaminho: {' -> '.join(caminho)}\nDistância: {dist} km")
+        criar_mapa(caminho)
     else:
-        resultado_label.config(text="Local de partida ou destino inválido.")
+        resultado_label.config(text="Não foi possível encontrar um caminho.")
 
-# Interface gráfica com Tkinter
 root = tk.Tk()
-root.title("Roteador de Caminho entre Bairros e Hospitais de Mogi das Cruzes")
+root.title("Roteador Inteligente para Hospitais - Mogi das Cruzes")
 
-# Adicionar campos de entrada
-ttk.Label(root, text="Local de partida:").grid(column=0, row=0)
+ttk.Label(root, text="Local de partida:").grid(row=0, column=0)
 entry_inicio = ttk.Entry(root)
-entry_inicio.grid(column=1, row=0)
+entry_inicio.grid(row=0, column=1)
 
-ttk.Label(root, text="Local de destino:").grid(column=0, row=1)
-entry_fim = ttk.Entry(root)
-entry_fim.grid(column=1, row=1)
+botao = ttk.Button(root, text="Calcular Rota", command=calcular_rota)
+botao.grid(row=1, column=0, columnspan=2)
 
-# Botão para calcular rota
-calcular_button = ttk.Button(root, text="Calcular Rota", command=calcular_rota)
-calcular_button.grid(column=0, row=2, columnspan=2)
-
-# Label para exibir resultado
 resultado_label = ttk.Label(root, text="")
-resultado_label.grid(column=0, row=3, columnspan=2)
+resultado_label.grid(row=2, column=0, columnspan=2)
 
-# Iniciar interface
 root.mainloop()
