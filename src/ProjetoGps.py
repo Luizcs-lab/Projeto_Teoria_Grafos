@@ -10,9 +10,8 @@ import os
 import webbrowser
 
 # ==================== CONFIGURAÇÕES ====================
-# API do OpenRouteService (crie uma conta gratuita em https://openrouteservice.org/)
-ORS_API_KEY = 'SUA_CHAVE_API_ORS_AQUI'  # Substitua aqui
-client = ors.Client(key=ORS_API_KEY)
+ORS_API_KEY = 'SUA_CHAVE_API_ORS_AQUI'  # Substitua pela sua chave
+client = ors.Client(key='5b3ce3597851110001cf62489a8c327265074323adbb26d3d3fb9107')
 geolocator = Nominatim(user_agent="meu_aplicativo_mogi_caminhos")
 CACHE_COORDENADAS = 'coordenadas_cache.pkl'
 
@@ -103,13 +102,11 @@ def criar_mapa(caminho):
     mapa = folium.Map(location=[-23.5, -46.2], zoom_start=13)
     marker_cluster = MarkerCluster().add_to(mapa)
 
-    # Marcadores
     for local in caminho:
         coord = obter_coordenadas(local)
         if coord:
             folium.Marker(coord, popup=local, icon=folium.Icon(color='blue')).add_to(marker_cluster)
 
-    # Traçar rota real com ORS
     coords = [tuple(obter_coordenadas(local)[::-1]) for local in caminho if obter_coordenadas(local)]
     if len(coords) >= 2:
         try:
@@ -123,30 +120,61 @@ def criar_mapa(caminho):
 
 # ==================== INTERFACE ====================
 def calcular_rota():
-    inicio = entry_inicio.get().strip()
+    inicio = entry_inicio.get()
+    fim = entry_fim.get()
 
     if inicio not in grafo:
         resultado_label.config(text="Local de partida inválido.")
         return
 
-    caminho, dist, hospital = hospital_mais_proximo(inicio)
-    if caminho:
-        resultado_label.config(text=f"Destino automático: {hospital}\nCaminho: {' -> '.join(caminho)}\nDistância: {dist} km")
-        criar_mapa(caminho)
+    if fim:
+        if fim not in grafo:
+            resultado_label.config(text="Destino inválido.")
+            return
+        caminho, distancia = dijkstra(grafo, inicio, fim)
+        if caminho:
+            resultado_label.config(
+                text=f"Destino: {fim}\nCaminho: {' -> '.join(caminho)}\nDistância: {distancia} km"
+            )
+            criar_mapa(caminho)
+        else:
+            resultado_label.config(text="Não foi possível encontrar o caminho.")
     else:
-        resultado_label.config(text="Não foi possível encontrar um caminho.")
+        melhor_caminho, menor_distancia, hospital_mais_proximo_nome = hospital_mais_proximo(inicio)
+        if melhor_caminho:
+            resultado_label.config(
+                text=f"Hospital mais próximo: {hospital_mais_proximo_nome}\n"
+                     f"Caminho: {' -> '.join(melhor_caminho)}\n"
+                     f"Distância: {menor_distancia} km"
+            )
+            criar_mapa(melhor_caminho)
+        else:
+            resultado_label.config(text="Não foi possível encontrar um hospital próximo.")
 
 root = tk.Tk()
 root.title("Roteador Inteligente para Hospitais - Mogi das Cruzes")
 
-ttk.Label(root, text="Local de partida:").grid(row=0, column=0)
-entry_inicio = ttk.Entry(root)
+# Interface
+frame = ttk.Frame(root, padding=10)
+frame.grid(row=0, column=0)
+
+ttkg = ttk.Label
+entryg = ttk.Entry
+
+# Entrada de origem e destino
+ttkg(frame, text="Local de partida:").grid(row=0, column=0)
+entry_inicio = entryg(frame)
 entry_inicio.grid(row=0, column=1)
 
-botao = ttk.Button(root, text="Calcular Rota", command=calcular_rota)
-botao.grid(row=1, column=0, columnspan=2)
+ttkg(frame, text="Destino (opcional):").grid(row=1, column=0)
+entry_fim = entryg(frame)
+entry_fim.grid(row=1, column=1)
 
-resultado_label = ttk.Label(root, text="")
-resultado_label.grid(row=2, column=0, columnspan=2)
+# Botão
+ttk.Button(frame, text="Calcular Rota", command=calcular_rota).grid(row=2, column=0, columnspan=2)
+
+# Resultado
+resultado_label = ttk.Label(frame, text="")
+resultado_label.grid(row=3, column=0, columnspan=2, pady=10)
 
 root.mainloop()
