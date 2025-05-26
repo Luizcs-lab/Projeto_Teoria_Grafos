@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_4d27c6d6c82805e5aba2992690512c44 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.Default.css"/>
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_4d27c6d6c82805e5aba2992690512c44" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_4d27c6d6c82805e5aba2992690512c44 = L.map(
+                "map_4d27c6d6c82805e5aba2992690512c44",
+                {
+                    center: [-23.1893, -46.31],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 13,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_8e5ddce71b3d0f9aa0b351b48eebf844 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_8e5ddce71b3d0f9aa0b351b48eebf844.addTo(map_4d27c6d6c82805e5aba2992690512c44);
+        
+    
+            var marker_cluster_40c65157a13f248f382e5e4f17465a7d = L.markerClusterGroup(
+                {
+}
+            );
+        
+    
+            var marker_0fbb92e96535a9aed6604ccff93c18f2 = L.marker(
+                [-23.5232167, -46.1995743],
+                {
+}
+            ).addTo(marker_cluster_40c65157a13f248f382e5e4f17465a7d);
+        
+    
+        var popup_704991eae7502a2a904e080fff25a694 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_4e395e18129042413e75cb9f88c32281 = $(`<div id="html_4e395e18129042413e75cb9f88c32281" style="width: 100.0%; height: 100.0%;">Centro</div>`)[0];
+                popup_704991eae7502a2a904e080fff25a694.setContent(html_4e395e18129042413e75cb9f88c32281);
+            
+        
+
+        marker_0fbb92e96535a9aed6604ccff93c18f2.bindPopup(popup_704991eae7502a2a904e080fff25a694)
+        ;
+
+        
+    
+    
+            var marker_61c3ee2eed58bf60b877e33188a05aa3 = L.marker(
+                [-23.5207053, -46.2025841],
+                {
+}
+            ).addTo(marker_cluster_40c65157a13f248f382e5e4f17465a7d);
+        
+    
+        var popup_75671a9ee216ef16a2e913bda9bb26fb = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_7686dbd365bb42cbd29a41e2ff566b7e = $(`<div id="html_7686dbd365bb42cbd29a41e2ff566b7e" style="width: 100.0%; height: 100.0%;">Vila Industrial</div>`)[0];
+                popup_75671a9ee216ef16a2e913bda9bb26fb.setContent(html_7686dbd365bb42cbd29a41e2ff566b7e);
+            
+        
+
+        marker_61c3ee2eed58bf60b877e33188a05aa3.bindPopup(popup_75671a9ee216ef16a2e913bda9bb26fb)
+        ;
+
+        
+    
+    
+            var marker_1d6c5e7ca8245b20b2e0be618b75caa8 = L.marker(
+                [-23.5264494, -46.1769303],
+                {
+}
+            ).addTo(marker_cluster_40c65157a13f248f382e5e4f17465a7d);
+        
+    
+        var popup_73ee492a750fecc097a52a118ae37366 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_73869af9b7b397d081d80e29d2a56f41 = $(`<div id="html_73869af9b7b397d081d80e29d2a56f41" style="width: 100.0%; height: 100.0%;">Vila Oliveira</div>`)[0];
+                popup_73ee492a750fecc097a52a118ae37366.setContent(html_73869af9b7b397d081d80e29d2a56f41);
+            
+        
+
+        marker_1d6c5e7ca8245b20b2e0be618b75caa8.bindPopup(popup_73ee492a750fecc097a52a118ae37366)
+        ;
+
+        
+    
+    
+            var marker_4cea629cc8f54e03c6d2a2bd09122631 = L.marker(
+                [-23.5416012, -46.2210038],
+                {
+}
+            ).addTo(marker_cluster_40c65157a13f248f382e5e4f17465a7d);
+        
+    
+        var popup_6b86c8d5d20524d49117cdab04d3fd63 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_1d3fef042b7870775425cc0e42431593 = $(`<div id="html_1d3fef042b7870775425cc0e42431593" style="width: 100.0%; height: 100.0%;">Hospital Municipal de Mogi</div>`)[0];
+                popup_6b86c8d5d20524d49117cdab04d3fd63.setContent(html_1d3fef042b7870775425cc0e42431593);
+            
+        
+
+        marker_4cea629cc8f54e03c6d2a2bd09122631.bindPopup(popup_6b86c8d5d20524d49117cdab04d3fd63)
+        ;
+
+        
+    
+    
+            var marker_bf845f87432167c33b19f91e95e03b03 = L.marker(
+                [-23.5416012, -46.2210038],
+                {
+}
+            ).addTo(marker_cluster_40c65157a13f248f382e5e4f17465a7d);
+        
+    
+        var popup_23318725859d611e41c5a2030723633f = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_683b445d013be37ab6c297fd0a92afb4 = $(`<div id="html_683b445d013be37ab6c297fd0a92afb4" style="width: 100.0%; height: 100.0%;">Hospital Municipal de Bras Cubas</div>`)[0];
+                popup_23318725859d611e41c5a2030723633f.setContent(html_683b445d013be37ab6c297fd0a92afb4);
+            
+        
+
+        marker_bf845f87432167c33b19f91e95e03b03.bindPopup(popup_23318725859d611e41c5a2030723633f)
+        ;
+
+        
+    
+    
+            var marker_f8f69d9e8a4ee1d074c2214284ef6392 = L.marker(
+                [-23.5333555, -46.2053989],
+                {
+}
+            ).addTo(marker_cluster_40c65157a13f248f382e5e4f17465a7d);
+        
+    
+        var popup_302374a70fdcfca0a1fc8557d776b5c5 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_e97446b0c485d7af8818215d90faa221 = $(`<div id="html_e97446b0c485d7af8818215d90faa221" style="width: 100.0%; height: 100.0%;">Hospital Santana</div>`)[0];
+                popup_302374a70fdcfca0a1fc8557d776b5c5.setContent(html_e97446b0c485d7af8818215d90faa221);
+            
+        
+
+        marker_f8f69d9e8a4ee1d074c2214284ef6392.bindPopup(popup_302374a70fdcfca0a1fc8557d776b5c5)
+        ;
+
+        
+    
+    
+            var marker_d72514a726c6ef2cd624a6fe8882828f = L.marker(
+                [-23.5286414, -46.1988133],
+                {
+}
+            ).addTo(marker_cluster_40c65157a13f248f382e5e4f17465a7d);
+        
+    
+        var popup_6f7f34a841a766910574a57120db43a5 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_c524abdd7652834381419129a0276057 = $(`<div id="html_c524abdd7652834381419129a0276057" style="width: 100.0%; height: 100.0%;">Hospital Ipiranga - Unidade Avançada</div>`)[0];
+                popup_6f7f34a841a766910574a57120db43a5.setContent(html_c524abdd7652834381419129a0276057);
+            
+        
+
+        marker_d72514a726c6ef2cd624a6fe8882828f.bindPopup(popup_6f7f34a841a766910574a57120db43a5)
+        ;
+
+        
+    
+    
+            var marker_2ca2e5edac098614fe68bcbf41468474 = L.marker(
+                [-23.5106503, -46.1947641],
+                {
+}
+            ).addTo(marker_cluster_40c65157a13f248f382e5e4f17465a7d);
+        
+    
+        var popup_8cb805ec6d8fabefef5c2218d6f1730c = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_af0495515f984c0e8f40678247ed41b0 = $(`<div id="html_af0495515f984c0e8f40678247ed41b0" style="width: 100.0%; height: 100.0%;">Hospital de Clínicas Luzia de Pinho Melo</div>`)[0];
+                popup_8cb805ec6d8fabefef5c2218d6f1730c.setContent(html_af0495515f984c0e8f40678247ed41b0);
+            
+        
+
+        marker_2ca2e5edac098614fe68bcbf41468474.bindPopup(popup_8cb805ec6d8fabefef5c2218d6f1730c)
+        ;
+
+        
+    
+    
+            marker_cluster_40c65157a13f248f382e5e4f17465a7d.addTo(map_4d27c6d6c82805e5aba2992690512c44);
+        
+    
+            var poly_line_cd43fdb35fd278532c2dbc96dde85bbe = L.polyline(
+                [[-23.5232167, -46.1995743], [-23.5416012, -46.2210038]],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.7, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_4d27c6d6c82805e5aba2992690512c44);
+        
+</script>
+</html>
