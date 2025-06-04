@@ -1,0 +1,7 @@
+folium
+geopy
+openrouteservice
+Pillow
+osmnx
+networkx
+scikit-learn
